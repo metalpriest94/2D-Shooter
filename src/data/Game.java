@@ -18,6 +18,8 @@ public class Game extends JFrame {
 	private ArrayList<DynamicAnimator> dynamicThreadPool;
 	private ArrayList<Thread> dynamicThreadController;
 	
+	private InputController inputC;
+	
 	
 	
 	/**
@@ -43,7 +45,7 @@ public class Game extends JFrame {
 	public Game() {
 		setTitle("Chad");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 891, 544);
 		gamePane = new JGamePanel();
 		gamePane.setBackground(Color.WHITE);
 		gamePane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -56,9 +58,11 @@ public class Game extends JFrame {
 		dynamicThreadPool = new ArrayList<DynamicAnimator>();
 		dynamicThreadController = new ArrayList<Thread>();
 		
+		inputC = new InputController(gamePane, dynamicThreadPool);
 		
 		gamePane.addStaticObject(imgPath + "crate.png" , 5, 50);
-		gamePane.addDynamicObject(imgPath + "crate.png" , 205, 50 ,imgPath + "crateDestroyed.png",imgPath + "crateDestroyed.png",imgPath + "crateDestroyed.png", dynamicThreadPool, dynamicThreadController);
+		gamePane.addDynamicObject(imgPath + "chadPistols.png" , 205, 250 ,imgPath + "chadShootDown.png",imgPath + "chadShootDown2.png",imgPath + "chadShootDown1.png", dynamicThreadPool, dynamicThreadController);
+		
 		
 	}
 

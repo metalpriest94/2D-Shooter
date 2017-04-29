@@ -18,7 +18,7 @@ public class JGamePanel extends JPanel {
 	private int topLeftX;
 	private int topLeftY;
 	
-	int scale = 10;
+	int scale = 5;
 	
 	public JGamePanel()
 	{
@@ -40,7 +40,7 @@ public class JGamePanel extends JPanel {
 		for (DynamicObject each:dynamicObjects)
 		{
 			Image currentSprite = each.getActiveSprite();
-			g2d.drawImage(currentSprite, each.posX, each.posY, each.getSprite().getWidth(this) * scale, each.getSprite().getHeight(this) * scale, this);
+			g2d.drawImage(currentSprite, each.posX - each.getActiveSprite().getWidth(this)*scale / 2, each.posY - each.getActiveSprite().getHeight(this) * scale, each.getActiveSprite().getWidth(this) * scale, each.getActiveSprite().getHeight(this) * scale, this);
 		}
 		
 	}
