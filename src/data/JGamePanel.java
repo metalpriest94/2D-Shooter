@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class JGamePanel extends JPanel {
 	private ArrayList<DynamicObject> dynamicObjects;
 	private ArrayList<StaticObject> staticObjects;
+	private ArrayList<Character> characters;
 	
 	private int sizeX;
 	private int sizeY;
@@ -23,8 +24,10 @@ public class JGamePanel extends JPanel {
 	public JGamePanel()
 	{
 		super();
-		dynamicObjects = new ArrayList<DynamicObject>();
+		
 		staticObjects = new ArrayList<StaticObject>();
+		dynamicObjects = new ArrayList<DynamicObject>();
+		characters = new ArrayList<Character>();
 	}
 	
 	public void paintComponent(Graphics g)
@@ -43,6 +46,11 @@ public class JGamePanel extends JPanel {
 			g2d.drawImage(currentSprite, each.posX - each.getActiveSprite().getWidth(this)*scale / 2, each.posY - each.getActiveSprite().getHeight(this) * scale, each.getActiveSprite().getWidth(this) * scale, each.getActiveSprite().getHeight(this) * scale, this);
 		}
 		
+		for (Character each:characters)
+		{
+			Image currentSprite = each.getActiveSprite();
+			g2d.drawImage(currentSprite, each.posX - each.getActiveSprite().getWidth(this)*scale / 2, each.posY - each.getActiveSprite().getHeight(this) * scale, each.getActiveSprite().getWidth(this) * scale, each.getActiveSprite().getHeight(this) * scale, this);
+		}
 	}
 	
 	public void addStaticObject(String spriteFile, int posX, int posY)
@@ -53,5 +61,10 @@ public class JGamePanel extends JPanel {
 	public void addDynamicObject(String spriteFile, int posX, int posY, String alternativeSpriteFile, String eliminatedSpriteFile, String actionSpriteFile, ArrayList<DynamicAnimator> threadPool, ArrayList<Thread> threadController)
 	{
 		dynamicObjects.add(new DynamicObject(spriteFile , posX, posY, alternativeSpriteFile, eliminatedSpriteFile, actionSpriteFile, this ,threadPool, threadController));
+	}
+	
+	public void addCharacter(String name, String gun, boolean isPlayer, int posX, int posY, ArrayList<DynamicAnimator> threadPool, ArrayList<Thread> threadController)
+	{
+		characters.add(new Character(name, gun, isPlayer, posX, posY, this ,threadPool, threadController));
 	}
 }

@@ -20,17 +20,20 @@ public class DynamicObject extends GameplayObject {
 	private int handledBy = 255;
 	private int position = 255;
 	
+	String imgPath = ("resources" + File.separator + "gfx" + File.separator);
+	
 	
 	public DynamicObject(String spriteFile, int posX, int posY, String alternativeSpriteFile, String eliminatedSpriteFile, String actionSpriteFile,JGamePanel parent, ArrayList<DynamicAnimator> threadPool, ArrayList<Thread> threadController) 
 	{
 		super(spriteFile, posX, posY);
+		
 		this.activeSprite = this.sprite;
 		blocking = false;
 		try
 		{
-			this.alternativeSprite = ImageIO.read(new File(alternativeSpriteFile));
-			this.eliminatedSprite = ImageIO.read(new File(eliminatedSpriteFile));
-			this.actionSprite = ImageIO.read(new File(actionSpriteFile));
+			this.alternativeSprite = ImageIO.read(new File(imgPath + alternativeSpriteFile));
+			this.eliminatedSprite = ImageIO.read(new File(imgPath + eliminatedSpriteFile));
+			this.actionSprite = ImageIO.read(new File(imgPath + actionSpriteFile));
 		}
 		catch (IOException ex)
 		{

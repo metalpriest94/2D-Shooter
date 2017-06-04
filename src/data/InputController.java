@@ -14,6 +14,8 @@ public class InputController {
 	JGamePanel parent;
 	ArrayList<DynamicAnimator> threadPool;
 	
+	Character player;
+	
 	InputMap input;
 	ActionMap action;
 	
@@ -22,11 +24,24 @@ public class InputController {
 	
 	AbstractAction shootDown;
 	AbstractAction shootDownRelease;
+	AbstractAction walkUp;
+	AbstractAction walkUpRelease;
 	AbstractAction walkDown;
 	AbstractAction walkDownRelease;
+	AbstractAction walkLeft;
+	AbstractAction walkLeftRelease;
+	AbstractAction walkRight;
+	AbstractAction walkRightRelease;
 	
-	int testStat= 0;
+	//Shooting
+	int shootStat= 0;
 	
+	//Walking
+	int walkStat= 0;
+	int stepSpan = 5;
+	int stepDist = 5;
+	
+	//Keys - Actions
 	final String UPKEY = "up";
 	final String UPKEYRELEASE = "upR";
 	final String DOWNKEY = "down";
@@ -50,6 +65,9 @@ public class InputController {
 		this.parent = parent;
 		this.threadPool = threadPool;
 		
+		player = (Character)threadPool.get(0).getObjectPool().get(0);
+		
+		
 		input = parent.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		action = parent.getActionMap();
 		
@@ -65,20 +83,20 @@ public class InputController {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if (testStat == 0 )
+				if (shootStat == 0 )
 				{
-					threadPool.get(0).getObjectPool().get(0).changeSprite(threadPool.get(0).getObjectPool().get(0).getAlternativeSprite(), threadPool);
-					testStat = 1;
+					player.changeSprite(player.getAlternativeSprite(), threadPool);
+					shootStat = 1;
 				}
-				else if (testStat == 1)
+				else if (shootStat == 1)
 				{
-					threadPool.get(0).getObjectPool().get(0).changeSprite(threadPool.get(0).getObjectPool().get(0).getEliminatedSprite(), threadPool);
-					testStat = 2;
+					player.changeSprite(player.getEliminatedSprite(), threadPool);
+					shootStat = 2;
 				}
 				else
 				{
-					threadPool.get(0).getObjectPool().get(0).changeSprite(threadPool.get(0).getObjectPool().get(0).getActionSprite(), threadPool);
-					testStat = 0;
+					player.changeSprite(player.getActionSprite(), threadPool);
+					shootStat = 0;
 				}
 			}
 		};
@@ -87,8 +105,49 @@ public class InputController {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				threadPool.get(0).getObjectPool().get(0).changeSprite(threadPool.get(0).getObjectPool().get(0).getSprite(), threadPool);
-				testStat= 0;
+				player.changeSprite(player.getStandFrontSprite(), threadPool);
+				shootStat= 0;
+			}
+		};
+		
+		
+		
+		
+		
+		walkUp = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.setPosY(player.getPosY()-stepDist);
+				if (walkStat < stepSpan)
+				{
+					player.changeSprite(player.getWalkBack1Sprite(), threadPool);
+					walkStat++;
+				}
+				else if (walkStat >= stepSpan*2 && walkStat < stepSpan*3)
+				{
+					player.changeSprite(player.getWalkBack2Sprite(), threadPool);
+					walkStat++;
+				}
+				else if ((walkStat >= stepSpan && walkStat < stepSpan*2) || (walkStat >= stepSpan*3 && walkStat < stepSpan*4))
+				{
+					player.changeSprite(player.getStandBackSprite(), threadPool);
+					walkStat++;
+					if (walkStat >= stepSpan*4)
+						walkStat = 0;
+				}
+			}
+		};
+		
+		walkUpRelease = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.changeSprite(player.getStandBackSprite(), threadPool);
+				if (walkStat < stepSpan)
+					walkStat = stepSpan;
+				else
+					walkStat = 0;
 			}
 		};
 		
@@ -96,7 +155,24 @@ public class InputController {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				threadPool.get(0).getObjectPool().get(0).setPosY(threadPool.get(0).getObjectPool().get(0).getPosY()+5);
+				player.setPosY(player.getPosY()+stepDist);
+				if (walkStat < stepSpan)
+				{
+					player.changeSprite(player.getWalkFront1Sprite(), threadPool);
+					walkStat++;
+				}
+				else if (walkStat >= stepSpan*2 && walkStat < stepSpan*3)
+				{
+					player.changeSprite(player.getWalkFront2Sprite(), threadPool);
+					walkStat++;
+				}
+				else if ((walkStat >= stepSpan && walkStat < stepSpan*2) || (walkStat >= stepSpan*3 && walkStat < stepSpan*4))
+				{
+					player.changeSprite(player.getStandFrontSprite(), threadPool);
+					walkStat++;
+					if (walkStat >= stepSpan*4)
+						walkStat = 0;
+				}
 			}
 		};
 		
@@ -104,7 +180,85 @@ public class InputController {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-
+				player.changeSprite(player.getStandFrontSprite(), threadPool);
+				if (walkStat < stepSpan)
+					walkStat = stepSpan;
+				else
+					walkStat = 0;
+			}
+		};
+		
+		walkLeft = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.setPosX(player.getPosX()-stepDist);
+				if (walkStat < stepSpan)
+				{
+					player.changeSprite(player.getWalkLeft1Sprite(), threadPool);
+					walkStat++;
+				}
+				else if (walkStat >= stepSpan*2 && walkStat < stepSpan*3)
+				{
+					player.changeSprite(player.getWalkLeft2Sprite(), threadPool);
+					walkStat++;
+				}
+				else if ((walkStat >= stepSpan && walkStat < stepSpan*2) || (walkStat >= stepSpan*3 && walkStat < stepSpan*4))
+				{
+					player.changeSprite(player.getStandLeftSprite(), threadPool);
+					walkStat++;
+					if (walkStat >= stepSpan*4)
+						walkStat = 0;
+				}
+			}
+		};
+		
+		walkLeftRelease = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.changeSprite(player.getStandLeftSprite(), threadPool);
+				if (walkStat < stepSpan)
+					walkStat = stepSpan;
+				else
+					walkStat = 0;
+			}
+		};
+		
+		walkRight = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.setPosX(player.getPosX()+stepDist);
+				if (walkStat < stepSpan)
+				{
+					player.changeSprite(player.getWalkRight1Sprite(), threadPool);
+					walkStat++;
+				}
+				else if (walkStat >= stepSpan*2 && walkStat < stepSpan*3)
+				{
+					player.changeSprite(player.getWalkRight2Sprite(), threadPool);
+					walkStat++;
+				}
+				else if ((walkStat >= stepSpan && walkStat < stepSpan*2) || (walkStat >= stepSpan*3 && walkStat < stepSpan*4))
+				{
+					player.changeSprite(player.getStandRightSprite(), threadPool);
+					walkStat++;
+					if (walkStat >= stepSpan*4)
+						walkStat = 0;
+				}
+			}
+		};
+		
+		walkRightRelease = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.changeSprite(player.getStandRightSprite(), threadPool);
+				if (walkStat < stepSpan)
+					walkStat = stepSpan;
+				else
+					walkStat = 0;
 			}
 		};
 	}
@@ -113,12 +267,26 @@ public class InputController {
 		
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, PRESS), DOWNKEY);
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, RELEASE), DOWNKEYRELEASE);
+		
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, PRESS), WKEY);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, RELEASE), WKEYRELEASE);
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, PRESS), SKEY);
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, RELEASE), SKEYRELEASE);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, PRESS), AKEY);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, RELEASE), AKEYRELEASE);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, PRESS), DKEY);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, RELEASE), DKEYRELEASE);
 
 		action.put(DOWNKEY, shootDown);
 		action.put(DOWNKEYRELEASE, shootDownRelease);
+		
+		action.put(WKEY, walkUp);
+		action.put(WKEYRELEASE, walkUpRelease);
 		action.put(SKEY, walkDown);
 		action.put(SKEYRELEASE, walkDownRelease);
+		action.put(AKEY, walkLeft);
+		action.put(AKEYRELEASE, walkLeftRelease);
+		action.put(DKEY, walkRight);
+		action.put(DKEYRELEASE, walkRightRelease);
 	}
 }

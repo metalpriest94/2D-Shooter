@@ -11,12 +11,13 @@ public abstract class GameplayObject {
 	int posY = 0;
 
 	Image sprite = null;
+	String imgPath = ("resources" + File.separator + "gfx" + File.separator);
 	
 	public GameplayObject(String spriteFile, int posX, int posY)
 	{
 		try
 		{
-			this.sprite = ImageIO.read(new File(spriteFile));
+			this.sprite = ImageIO.read(new File(imgPath + spriteFile));
 		}
 		catch (IOException ex)
 		{
