@@ -67,4 +67,10 @@ public class JGamePanel extends JPanel {
 	{
 		characters.add(new Character(name, gun, isPlayer, posX, posY, this ,threadPool, threadController));
 	}
+
+	public ArrayList<Character> getCharacters() {
+		return characters;
+	}
+	
+	
 }

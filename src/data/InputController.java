@@ -13,6 +13,7 @@ import javax.swing.KeyStroke;
 public class InputController {
 	JGamePanel parent;
 	ArrayList<DynamicAnimator> threadPool;
+	ArrayList<Character> characterList;
 	
 	Character player;
 	
@@ -65,7 +66,18 @@ public class InputController {
 		this.parent = parent;
 		this.threadPool = threadPool;
 		
-		player = (Character)threadPool.get(0).getObjectPool().get(0);
+		characterList = parent.getCharacters();
+		
+		for (Character each:characterList)
+		{
+			if (each.isPlayer())
+			{
+				System.out.println(each.getHandledBy() + " " + each.getPosition());
+				player = (Character)threadPool.get(each.getHandledBy()).getObjectPool().get(each.getPosition());
+				break;
+			}
+		}
+		
 		
 		
 		input = parent.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -77,26 +89,75 @@ public class InputController {
 		
 	}
 	
+	public ArrayList<Integer> getObjInLine(int direction)
+	{
+		ArrayList<Integer> obj = new ArrayList<Integer>();
+		obj.add(255);
+		obj.add(255);
+		
+		boolean objFound = false;
+		boolean notDone = true;
+		while (!objFound && notDone)
+		{
+			for (Character each:characterList)
+			{
+				int posX = each.getPosX();
+				int posY = each.getPosY();
+				
+				int diffX = posX - player.getPosX();
+				int diffY = posY - player.getPosY();
+				
+				System.out.println(diffX + " " + diffY);
+						
+				if ((direction ==3 && diffY < 500 && diffY > 0 && diffX > -500 && diffX < 500 && diffX < diffY && diffX > -diffY))
+				{
+					objFound = true;
+					obj.clear();
+					obj.add(each.getHandledBy());
+					obj.add(each.getPosition());
+				}
+
+			}
+			notDone = false;
+		}
+		return obj;
+	}
+	
 	public void initiateActions()
 	{
 		shootDown = new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if (shootStat == 0 )
+				System.out.println(shootStat);
+				if (shootStat == 0)
 				{
-					player.changeSprite(player.getAlternativeSprite(), threadPool);
-					shootStat = 1;
+					player.changeSprite(player.getShootDown1Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(3);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
 				}
-				else if (shootStat == 1)
+				else if (shootStat == 2)
 				{
-					player.changeSprite(player.getEliminatedSprite(), threadPool);
-					shootStat = 2;
+					player.changeSprite(player.getShootDown2Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(3);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
 				}
 				else
 				{
-					player.changeSprite(player.getActionSprite(), threadPool);
-					shootStat = 0;
+					player.changeSprite(player.getStandFrontSprite(), threadPool);
+					shootStat++;
+					if (shootStat >= 4)
+						shootStat = 0;
 				}
 			}
 		};

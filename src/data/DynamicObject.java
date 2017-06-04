@@ -21,12 +21,13 @@ public class DynamicObject extends GameplayObject {
 	private int position = 255;
 	
 	String imgPath = ("resources" + File.separator + "gfx" + File.separator);
-	
+	ArrayList<DynamicAnimator> threadPool;
 	
 	public DynamicObject(String spriteFile, int posX, int posY, String alternativeSpriteFile, String eliminatedSpriteFile, String actionSpriteFile,JGamePanel parent, ArrayList<DynamicAnimator> threadPool, ArrayList<Thread> threadController) 
 	{
 		super(spriteFile, posX, posY);
 		
+		this.threadPool = threadPool;
 		this.activeSprite = this.sprite;
 		blocking = false;
 		try
@@ -119,6 +120,15 @@ public class DynamicObject extends GameplayObject {
 	public Image getActiveSprite() {
 		return activeSprite;
 	}
+
+	public int getHandledBy() {
+		return handledBy;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+	
 	
 	
 }

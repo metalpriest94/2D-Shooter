@@ -51,7 +51,6 @@ public class DynamicAnimator implements Runnable {
 			objID.add(255);
 			objID.add(255);
 		}
-		positionID++;
 		return objID;
 	}
 	
