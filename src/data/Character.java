@@ -15,6 +15,7 @@ public class Character extends DynamicObject {
 	private boolean isPlayer;
 	
 	private int health;
+	private boolean isDead;
 	
 	private Image standFrontSprite = null;
 	private Image walkFront1Sprite = null;
@@ -52,6 +53,7 @@ public class Character extends DynamicObject {
 		this.gun = gun;
 		this.isPlayer = isPlayer;
 		this.health = 100;
+		this.isDead = false;
 		getSprites(name, gun);
 		
 	}
@@ -104,7 +106,6 @@ public class Character extends DynamicObject {
 			die(true);
 		else if (health <= 0)
 			die(false);
-		System.out.println("OUCH!" + health);
 	}
 	
 	public void die(boolean isGibbed)
@@ -113,6 +114,7 @@ public class Character extends DynamicObject {
 			this.changeSprite(gibbedSprite, threadPool);
 		else
 			this.changeSprite(deadSprite, threadPool);
+		isDead = true;
 	}
 	
 
@@ -214,6 +216,10 @@ public class Character extends DynamicObject {
 
 	public boolean isPlayer() {
 		return isPlayer;
+	}
+
+	public boolean isDead() {
+		return isDead;
 	}
 
 

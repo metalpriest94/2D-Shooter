@@ -62,8 +62,12 @@ public class Game extends JFrame {
 		
 		gamePane.addStaticObject("crate.png" , 5, 50);
 		//gamePane.addDynamicObject("dummy.png" , 205, 250 ,"chadDownPistolsStand.png","chadDownPistolsShoot1.png","chadDownPistolsShoot2.png", dynamicThreadPool, dynamicThreadController);
-		gamePane.addCharacter("chad","Pistols", false , 500, 500, dynamicThreadPool, dynamicThreadController);
-		gamePane.addCharacter("chad","Pistols", true , 500, 200, dynamicThreadPool, dynamicThreadController);
+		gamePane.addCharacter("chad","Pistols", false , 300, 400, dynamicThreadPool, dynamicThreadController);
+		gamePane.addCharacter("chad","Pistols", false , 400, 300, dynamicThreadPool, dynamicThreadController);
+		gamePane.addCharacter("chad","Pistols", false , 500, 400, dynamicThreadPool, dynamicThreadController);
+		gamePane.addCharacter("chad","Pistols", false , 400, 500, dynamicThreadPool, dynamicThreadController);
+		gamePane.addCharacter("chad","Pistols", true , 400, 400, dynamicThreadPool, dynamicThreadController);
+		
 		inputC = new InputController(gamePane, dynamicThreadPool);
 		
 	}

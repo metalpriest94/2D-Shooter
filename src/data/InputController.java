@@ -23,8 +23,15 @@ public class InputController {
 	final boolean RELEASE = true;
 	final boolean PRESS = false;
 	
+	AbstractAction shootUp;
+	AbstractAction shootUpRelease;
 	AbstractAction shootDown;
 	AbstractAction shootDownRelease;
+	AbstractAction shootLeft;
+	AbstractAction shootLeftRelease;
+	AbstractAction shootRight;
+	AbstractAction shootRightRelease;
+	
 	AbstractAction walkUp;
 	AbstractAction walkUpRelease;
 	AbstractAction walkDown;
@@ -72,7 +79,6 @@ public class InputController {
 		{
 			if (each.isPlayer())
 			{
-				System.out.println(each.getHandledBy() + " " + each.getPosition());
 				player = (Character)threadPool.get(each.getHandledBy()).getObjectPool().get(each.getPosition());
 				break;
 			}
@@ -107,9 +113,13 @@ public class InputController {
 				int diffX = posX - player.getPosX();
 				int diffY = posY - player.getPosY();
 				
-				System.out.println(diffX + " " + diffY);
 						
-				if ((direction ==3 && diffY < 500 && diffY > 0 && diffX > -500 && diffX < 500 && diffX < diffY && diffX > -diffY))
+				if (
+						(direction ==1 && diffY > -500 && diffY < 0 && diffX > -500 && diffX < 500 && diffX >= diffY && diffX <= -diffY && !each.isDead()) ||
+						(direction ==2 && diffX < 500 && diffX > 0 && diffY > -500 && diffY < 500 && diffY <= diffX && diffY >= -diffX && !each.isDead()) ||
+						(direction ==3 && diffY < 500 && diffY > 0 && diffX > -500 && diffX < 500 && diffX <= diffY && diffX >= -diffY && !each.isDead()) ||
+						(direction ==4 && diffX > -500 && diffX < 0 && diffY > -500 && diffY < 500 && diffY >= diffX && diffY <= -diffX && !each.isDead()) 
+					)
 				{
 					objFound = true;
 					obj.clear();
@@ -125,11 +135,55 @@ public class InputController {
 	
 	public void initiateActions()
 	{
+		shootUp = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (shootStat == 0)
+				{
+					player.changeSprite(player.getShootUp1Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(1);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
+				}
+				else if (shootStat == 2)
+				{
+					player.changeSprite(player.getShootUp2Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(1);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
+				}
+				else
+				{
+					player.changeSprite(player.getStandBackSprite(), threadPool);
+					shootStat++;
+					if (shootStat >= 4)
+						shootStat = 0;
+				}
+			}
+		};
+		
+		shootUpRelease = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.changeSprite(player.getStandBackSprite(), threadPool);
+				shootStat= 0;
+			}
+		};
+		
 		shootDown = new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				System.out.println(shootStat);
 				if (shootStat == 0)
 				{
 					player.changeSprite(player.getShootDown1Sprite(), threadPool);
@@ -167,6 +221,96 @@ public class InputController {
 			public void actionPerformed(ActionEvent e) 
 			{
 				player.changeSprite(player.getStandFrontSprite(), threadPool);
+				shootStat= 0;
+			}
+		};
+		
+		shootLeft = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (shootStat == 0)
+				{
+					player.changeSprite(player.getShootLeft1Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(4);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
+				}
+				else if (shootStat == 2)
+				{
+					player.changeSprite(player.getShootLeft2Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(4);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
+				}
+				else
+				{
+					player.changeSprite(player.getStandLeftSprite(), threadPool);
+					shootStat++;
+					if (shootStat >= 4)
+						shootStat = 0;
+				}
+			}
+		};
+		
+		shootLeftRelease = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.changeSprite(player.getStandLeftSprite(), threadPool);
+				shootStat= 0;
+			}
+		};
+		
+		shootRight = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (shootStat == 0)
+				{
+					player.changeSprite(player.getShootRight1Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(2);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
+				}
+				else if (shootStat == 2)
+				{
+					player.changeSprite(player.getShootRight2Sprite(), threadPool);
+					ArrayList<Integer> objToShoot = getObjInLine(2);
+					if (!(objToShoot.get(0) == 255) && !(objToShoot.get(1) == 255))
+					{
+						Character victim = (Character)threadPool.get(objToShoot.get(0)).getObjectPool().get(objToShoot.get(1));
+						victim.receiveDamage(30, false);
+						shootStat++;
+					}
+				}
+				else
+				{
+					player.changeSprite(player.getStandRightSprite(), threadPool);
+					shootStat++;
+					if (shootStat >= 4)
+						shootStat = 0;
+				}
+			}
+		};
+		
+		shootRightRelease = new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				player.changeSprite(player.getStandRightSprite(), threadPool);
 				shootStat= 0;
 			}
 		};
@@ -326,8 +470,14 @@ public class InputController {
 	public void initiateMapping()
 	{
 		
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, PRESS), UPKEY);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, RELEASE), UPKEYRELEASE);
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, PRESS), DOWNKEY);
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, RELEASE), DOWNKEYRELEASE);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, PRESS), LEFTKEY);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, RELEASE), LEFTKEYRELEASE);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, PRESS), RIGHTKEY);
+		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, RELEASE), RIGHTKEYRELEASE);
 		
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, PRESS), WKEY);
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, RELEASE), WKEYRELEASE);
@@ -338,8 +488,14 @@ public class InputController {
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, PRESS), DKEY);
 		input.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, RELEASE), DKEYRELEASE);
 
+		action.put(UPKEY, shootUp);
+		action.put(UPKEYRELEASE, shootUpRelease);
 		action.put(DOWNKEY, shootDown);
 		action.put(DOWNKEYRELEASE, shootDownRelease);
+		action.put(LEFTKEY, shootLeft);
+		action.put(LEFTKEYRELEASE, shootLeftRelease);
+		action.put(RIGHTKEY, shootRight);
+		action.put(RIGHTKEYRELEASE, shootRightRelease);
 		
 		action.put(WKEY, walkUp);
 		action.put(WKEYRELEASE, walkUpRelease);
